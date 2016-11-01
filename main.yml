@@ -1,0 +1,15 @@
+- name: "Setup cluster on Azure" 
+  hosts: localhost
+  connection: local
+  
+  roles:
+  - common
+
+- name: "Run cluster on VM"
+  hosts: VirtualMachines
+  remote_user: MikeAzure
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+  - vm

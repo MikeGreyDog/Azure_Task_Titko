@@ -1,0 +1,39 @@
+version: '2'
+services:
+  app1:
+    build: app/.
+    links:
+    - mysql-server
+
+  app2:
+    build: app/.
+    links:
+    - mysql-server
+
+  app3:
+    build: app/.
+    links:
+    - mysql-server
+
+
+  mysql-server:
+    image: mysql:latest
+    environment:
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpassword
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: testdb
+    ports:
+    - "3306:3306"
+
+  haproxy:
+    build: haproxy/.
+    links:
+     - app1
+     - app2
+     - app3
+    ports:
+     - "2222:80"
+  
+
+

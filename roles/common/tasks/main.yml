@@ -1,0 +1,85 @@
+    - name: Create a resource group
+      azure_rm_resourcegroup:
+        client_id: "{{ client_id }}"
+        secret: "{{ secret }}"
+        subscription_id: "{{ sub_id }}"
+        tenant: "{{ tenant }}"
+        name: "Titko"
+        location: "westus"   
+
+    - name: Create storage account
+      azure_rm_storageaccount:
+        resource_group: Titko
+        name: titkoaccount001
+        account_type: Standard_LRS
+
+    - name: Create virtual network
+      azure_rm_virtualnetwork:
+        resource_group: Titko
+        name: titkovn001
+        address_prefixes: "10.10.0.0/16"
+
+    - name: Add subnet
+      azure_rm_subnet:
+        resource_group: Titko
+        name: titkosubnet001
+        address_prefix: "10.10.0.0/24"
+        virtual_network: titkovn001
+
+    - name: Create public ip
+      azure_rm_publicipaddress:
+        resource_group: Titko
+        allocation_method: Static
+        name: titkopublicip001
+      register: state
+
+    - name: Create security group that allows SSH
+      azure_rm_securitygroup:
+        resource_group: Titko
+        name: titkosecgroup001
+        rules:
+          - name: SSH
+            protocol: Tcp
+            destination_port_range: 22
+            access: Allow
+            priority: 101
+            direction: Inbound
+
+    - name: Create NIC
+      azure_rm_networkinterface:
+        resource_group: Titko
+        name: testnic001
+        virtual_network: titkovn001
+        subnet: titkosubnet001
+        public_ip_name: titkopublicip001
+        security_group: titkosecgroup001
+
+    - name: Create VM
+      azure_rm_virtualmachine:
+        resource_group: Titko
+        name: Titko
+        vm_size: Standard_D1
+        storage_account: titkoaccount001
+        storage_container: titkovm001
+        storage_blob: titkovm001.vhd
+        admin_username: MikeAzure
+        admin_password: Azurepassword1
+        ssh_public_keys:
+          - path: /home/MikeAzure/.ssh/authorized_keys
+            key_data: "{{ public_key }}"
+        image:
+          offer: CentOS
+          publisher: OpenLogic
+          sku: '7.1'
+          version: latest
+      register : host        
+
+    - debug: var=state.state.ip_address      
+
+    - name: Add new instance to host group
+      add_host :
+        hostname  : "{{ state.state.ip_address }}"
+        groupname : VirtualMachines
+ 
+
+

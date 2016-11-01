@@ -1,0 +1,4 @@
+[LOCALHOST]
+localhost ansible_connection=local
+
+[VirtualMachines]
