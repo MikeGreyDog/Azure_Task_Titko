@@ -52,7 +52,7 @@
     - name: Download Tomcat image
       shell: docker pull tomcat
 
-    - name: Copy docker-swarm package
+    - name: Copy docker-compose package
       copy: src=Docker.zip
             dest=/home/MikeAzure   
             owner=MikeAzure

@@ -62,8 +62,8 @@
         storage_account: titkoaccount001
         storage_container: titkovm001
         storage_blob: titkovm001.vhd
-        admin_username: MikeAzure
-        admin_password: Azurepassword1
+        admin_username: "{{ username }}"
+        admin_password: "{{ password }}"
         ssh_public_keys:
           - path: /home/MikeAzure/.ssh/authorized_keys
             key_data: "{{ public_key }}"
