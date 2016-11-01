@@ -64,6 +64,7 @@
         storage_blob: titkovm001.vhd
         admin_username: "{{ username }}"
         admin_password: "{{ password }}"
+        ssh_password_enabled: False
         ssh_public_keys:
           - path: /home/MikeAzure/.ssh/authorized_keys
             key_data: "{{ public_key }}"
